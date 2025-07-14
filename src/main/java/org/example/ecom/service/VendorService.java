@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.repository.VendorRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class VendorService {
     private final VendorRepo vendorRepo;
+    private final StorageService storageService;
 
     public List<Vendor> findAll() {
         return vendorRepo.findAll();
@@ -29,7 +31,10 @@ public class VendorService {
         vendorRepo.deleteById(id);
     }
 
-    public Vendor updateVendor(Long id, Vendor vendor) {
+    public Vendor updateVendor(Long id, Vendor vendor, MultipartFile file) {
+        storageService.store(file);
+        vendor.setImage(file.getOriginalFilename());
+
         Vendor existingVendor = vendorRepo.findById(id).orElseThrow(() -> new RuntimeException("Vendor not found"));
         existingVendor.setUsername(vendor.getUsername());
         existingVendor.setAddress(vendor.getAddress());
@@ -37,6 +42,7 @@ public class VendorService {
         existingVendor.setEmail(vendor.getEmail());
         existingVendor.setAddress(vendor.getAddress());
         existingVendor.setPassword(vendor.getPassword());
+        existingVendor.setImage(vendor.getImage());
         return vendorRepo.save(existingVendor);
     }
 }

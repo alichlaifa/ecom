@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.ecom.model.Client;
 import org.example.ecom.service.ClientService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public Client updateClient(@PathVariable Long id, @RequestBody Client client) {
-        return clientService.updateClient(id, client);
+    public Client updateClient(@PathVariable Long id, @ModelAttribute Client client, @RequestPart MultipartFile file) {
+        return clientService.updateClient(id, client, file);
     }
 }

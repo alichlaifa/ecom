@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.ecom.model.Client;
 import org.example.ecom.repository.ClientRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 public class ClientService {
-    private ClientRepo clientRepo;
+    private final ClientRepo clientRepo;
+    private final StorageService storageService;
 
     public List<Client> findAll() {
         return clientRepo.findAll();
@@ -29,7 +31,10 @@ public class ClientService {
         clientRepo.deleteById(id);
     }
 
-    public Client updateClient(Long id, Client client) {
+    public Client updateClient(Long id, Client client, MultipartFile file) {
+        storageService.store(file);
+        client.setImage(file.getOriginalFilename());
+
         Client existingClient = clientRepo.findById(id).orElseThrow(() -> new RuntimeException("Client not found"));
         existingClient.setUsername(client.getUsername());
         existingClient.setPassword(client.getPassword());
@@ -37,6 +42,7 @@ public class ClientService {
         existingClient.setPhone(client.getPhone());
         existingClient.setAddress(client.getAddress());
         existingClient.setRole(client.getRole());
+        existingClient.setImage(client.getImage());
         return clientRepo.save(existingClient);
     }
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.service.VendorService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class VendorController {
     }
 
     @PutMapping("/{id}")
-    public Vendor updateVendor(@PathVariable Long id, @RequestBody Vendor vendor) {
-        return vendorService.updateVendor(id,vendor);
+    public Vendor updateVendor(@PathVariable Long id, @ModelAttribute Vendor vendor, @RequestPart MultipartFile file) {
+        return vendorService.updateVendor(id,vendor, file);
     }
 }

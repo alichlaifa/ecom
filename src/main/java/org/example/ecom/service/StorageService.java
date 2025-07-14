@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,8 @@ public class StorageService {
     //    Cette méthode enregistre (upload) un fichier (typiquement une image) envoyé via une requête HTTP dans un répertoire local du serveur.
     public void store(MultipartFile file) {
         try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()),
+                    StandardCopyOption.REPLACE_EXISTING);
 
         } catch (Exception e) {
             throw new RuntimeException("FAIL!");
