@@ -84,6 +84,5 @@ public class ProductService {
     public Product getProductByName(String name) {
         return productRepo.findByName(name).orElseThrow(() -> new RuntimeException("Product not found"));
     }
-
-
+    
 }
