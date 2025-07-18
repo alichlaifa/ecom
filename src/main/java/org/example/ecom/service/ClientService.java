@@ -1,11 +1,16 @@
 package org.example.ecom.service;
 
 import lombok.AllArgsConstructor;
+import org.example.ecom.dto.RegisterRequest;
 import org.example.ecom.model.Client;
+import org.example.ecom.model._Role;
 import org.example.ecom.repository.ClientRepo;
+import org.example.ecom.repository.UserRepo;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +19,10 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepo clientRepo;
     private final StorageService storageService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepo userRepo;
+    private final AuthenticationManager authenticationManager;
+    private final JwtEncoder jwtEncoder;
 
     public List<Client> findAll() {
         return clientRepo.findAll();
@@ -45,4 +54,26 @@ public class ClientService {
         existingClient.setImage(client.getImage());
         return clientRepo.save(existingClient);
     }
+
+    public void register(RegisterRequest registerRequest) {
+        if (userRepo.findByUsername(registerRequest.getUsername()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        Client client = Client.builder()
+                .fullName(registerRequest.getFullName())
+                .email(registerRequest.getEmail())
+                .username(registerRequest.getUsername())
+                .birthDate(registerRequest.getBirthDate())
+                .role(_Role.ROLE_CLIENT)
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .isEnabled(true)
+                .build();
+        userRepo.save(client);
+    }
+
+
 }

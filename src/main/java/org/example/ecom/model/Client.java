@@ -8,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
-@Data
 public class Client extends _User {
 
 }

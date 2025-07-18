@@ -1,6 +1,7 @@
 package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
+import org.example.ecom.dto.RegisterVendorRequest;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.service.VendorService;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,10 @@ public class VendorController {
     @PutMapping("/{id}")
     public Vendor updateVendor(@PathVariable Long id, @ModelAttribute Vendor vendor, @RequestPart MultipartFile file) {
         return vendorService.updateVendor(id,vendor, file);
+    }
+
+    @PostMapping("/register")
+    public void registerVendor(@RequestBody RegisterVendorRequest registerVendorRequest) {
+        vendorService.register(registerVendorRequest);
     }
 }

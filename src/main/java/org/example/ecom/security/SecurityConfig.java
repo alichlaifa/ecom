@@ -50,7 +50,6 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth // Starts defining authorization rules for HTTP requests.
                         .requestMatchers( // Specifies one or more URL patterns that the following rule applies to.
-                                "/api/v1/user/all",
                                 "/api/v1/user/enable-disable/**",
                                 "/api/v1/illustration/delete/**")
                         .hasAuthority("SCOPE_ROLE_ADMIN")
@@ -70,7 +69,10 @@ public class SecurityConfig {
                                 "/api/modules/**",
                                 "/api/questions/**",
                                 "/api/responses/**",
-                                "/api/teachers/**"
+                                "/api/teachers/**",
+                                "/api/v1/client/**",
+                                "/api/v1/vendor/**",
+                               "/api/v1/user/**"
                         )
                         .permitAll()
                         .anyRequest().authenticated()) // For any other URL not matched above, the user must be authenticated (logged in)

@@ -1,8 +1,10 @@
 package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
+import org.example.ecom.dto.RegisterRequest;
 import org.example.ecom.model.Client;
 import org.example.ecom.service.ClientService;
+import org.example.ecom.service.VendorService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,11 +13,12 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/client")
+@RequestMapping("api/v1/client")
 public class ClientController {
+    private final VendorService vendorService;
     private ClientService clientService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Client> findAll() {
         return clientService.findAll();
     }
@@ -38,5 +41,10 @@ public class ClientController {
     @PutMapping("/{id}")
     public Client updateClient(@PathVariable Long id, @ModelAttribute Client client, @RequestPart MultipartFile file) {
         return clientService.updateClient(id, client, file);
+    }
+
+    @PostMapping("/register")
+    public void registerClient(@RequestBody RegisterRequest registerRequest) {
+        clientService.register(registerRequest);
     }
 }

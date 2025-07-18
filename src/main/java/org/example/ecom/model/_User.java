@@ -36,7 +36,6 @@ public class _User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private _Role role;
 
-    // Renvoie la liste des rôles ou permissions de l'utilisateur.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -52,7 +51,6 @@ public class _User implements UserDetails {
         return true;
     }
 
-    // Renvoie true si les informations d'identification (mot de passe, etc.) ne sont pas expirées.
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
@@ -73,7 +71,6 @@ public class _User implements UserDetails {
         return this.password;
     }
 
-    // Permet de stocker un token d’authentification lié à un utilisateur.
     @OneToOne(mappedBy = "user")
     private _Token token;
 }

@@ -66,18 +66,16 @@ public class ProductService {
     }
 
     public Product addProductByClientIdAndCategoryId(Long clientId, Long categoryId, Product product, MultipartFile file) {
-        // Sauvegarder l'image via StorageService
+        // Store the uploaded file and set the image filename on the product
         storageService.store(file);
-        // Enregistrer le nom du fichier dans le produit
         product.setImage(file.getOriginalFilename());
 
-        // Associer client et catégorie
+        // Retrieve related Client and Category entities from the database
         Client client = clientRepo.findById(clientId).orElseThrow(() -> new RuntimeException("Client not found"));
         Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         product.setClient(client);
         product.setCategory(category);
 
-        // Sauvegarder produit
         return productRepo.save(product);
     }
 

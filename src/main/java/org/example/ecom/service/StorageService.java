@@ -20,7 +20,8 @@ public class StorageService {
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private final Path rootLocation = Paths.get("upload-dir");
 
-    //    Cette méthode enregistre (upload) un fichier (typiquement une image) envoyé via une requête HTTP dans un répertoire local du serveur.
+    // This method uploads a file (typically an image) sent via an HTTP request
+    // and saves it to a local directory on the server.
     public void store(MultipartFile file) {
         try {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()),
@@ -31,7 +32,8 @@ public class StorageService {
         }
     }
 
-    //    Cette méthode permet de charger un fichier (comme une image ou un PDF) depuis le disque, pour l’envoyer au client via HTTP
+    // This method loads a file (such as an image or PDF) from disk
+    // so it can be returned to the client via an HTTP response.
     public Resource loadFile(String filename) {
         try {
             Path file = rootLocation.resolve(filename);
