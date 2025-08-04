@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/favoris")
+@RequestMapping("/api/v1/favoris")
 public class FavorisController {
     private final FavorisService favorisService;
 
@@ -25,7 +25,7 @@ public class FavorisController {
     }
 
     @PostMapping
-    public Favoris addFavoris(@RequestParam Favoris favoris, @RequestParam Long productId, @RequestParam Long clientId) {
+    public Favoris addFavoris(@ModelAttribute Favoris favoris, @RequestParam Long productId, @RequestParam Long clientId) {
         return favorisService.addFavoris(favoris, productId, clientId);
     }
 

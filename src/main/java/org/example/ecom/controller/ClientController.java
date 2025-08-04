@@ -2,9 +2,12 @@ package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.ecom.dto.RegisterRequest;
+import org.example.ecom.dto.SuccessMessageRequest;
 import org.example.ecom.model.Client;
 import org.example.ecom.service.ClientService;
 import org.example.ecom.service.VendorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +18,6 @@ import java.util.Optional;
 @AllArgsConstructor
 @RequestMapping("api/v1/client")
 public class ClientController {
-    private final VendorService vendorService;
     private ClientService clientService;
 
     @GetMapping("/all")
@@ -44,7 +46,12 @@ public class ClientController {
     }
 
     @PostMapping("/register")
-    public void registerClient(@RequestBody RegisterRequest registerRequest) {
-        clientService.register(registerRequest);
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+        try {
+            clientService.register(registerRequest);
+            return ResponseEntity.ok(new SuccessMessageRequest("User registered successfully!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

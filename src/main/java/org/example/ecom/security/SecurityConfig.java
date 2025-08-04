@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .hasAuthority("SCOPE_ROLE_ADMIN")
                         .requestMatchers(
                                 "/api/v1/user/**",
+                                "/api/v1/upload/**",
                                 "/api/v1/statrecapchaine/**",
                                 "/api/v1/illustration/all",
                                 "/content/**",
@@ -72,7 +73,11 @@ public class SecurityConfig {
                                 "/api/teachers/**",
                                 "/api/v1/client/**",
                                 "/api/v1/vendor/**",
-                               "/api/v1/user/**"
+                                "/api/v1/products/**" ,
+                                "/api/v1/category/**",
+                                "/api/v1/subcategories/**",
+                                "/api/v1/order",
+                                "/api/v1/favoris"
                         )
                         .permitAll()
                         .anyRequest().authenticated()) // For any other URL not matched above, the user must be authenticated (logged in)

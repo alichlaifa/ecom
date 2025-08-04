@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/order")
+@RequestMapping("/api/v1/order")
 public class OrderController {
     private final OrderService orderService;
 

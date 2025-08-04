@@ -2,8 +2,11 @@ package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.ecom.dto.RegisterVendorRequest;
+import org.example.ecom.dto.SuccessMessageRequest;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.service.VendorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/vendor")
+@RequestMapping("api/v1/vendor")
 public class VendorController {
     private final VendorService vendorService;
 
@@ -42,7 +45,12 @@ public class VendorController {
     }
 
     @PostMapping("/register")
-    public void registerVendor(@RequestBody RegisterVendorRequest registerVendorRequest) {
-        vendorService.register(registerVendorRequest);
+    public ResponseEntity<?> register(@RequestBody RegisterVendorRequest registerVendorRequest) {
+        try {
+            vendorService.register(registerVendorRequest);
+            return ResponseEntity.ok(new SuccessMessageRequest("User registered successfully!"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }

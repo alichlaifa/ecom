@@ -18,6 +18,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+        System.out.println("Received login request: " + loginRequest); // Debug log
         try{
             JwtToken jwtToken =userService.login(loginRequest);
             return ResponseEntity.ok(jwtToken);

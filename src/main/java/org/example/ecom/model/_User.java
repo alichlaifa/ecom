@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class _User implements UserDetails {
     private String phone;
     private String image;
     private String fullName;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     private Boolean isEnabled;
 
     @Enumerated(value = EnumType.STRING)
