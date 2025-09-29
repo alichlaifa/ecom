@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .hasAuthority("SCOPE_ROLE_ADMIN")
                         .requestMatchers(
                                 "/api/v1/user/**",
-                                "/api/v1/upload/**",
+                                "upload/**",
                                 "/api/v1/statrecapchaine/**",
                                 "/api/v1/illustration/all",
                                 "/content/**",
@@ -75,9 +75,16 @@ public class SecurityConfig {
                                 "/api/v1/vendor/**",
                                 "/api/v1/products/**" ,
                                 "/api/v1/category/**",
-                                "/api/v1/subcategories/**",
-                                "/api/v1/order",
-                                "/api/v1/favoris"
+                                "/api/v1/subcategory/**",
+                                "/api/v1/order/**",
+                                "/api/v1/favorite/**",
+                                "/api/v1/reviews/**",
+                                "/api/v1/admin/**",
+                                "/ws-notifications/**",
+                                "/api/v1/notifications/**",
+                                "/api/v1/search/**",
+                                "/api/v1/recommended/**",
+                                "api/v1/payment/**"
                         )
                         .permitAll()
                         .anyRequest().authenticated()) // For any other URL not matched above, the user must be authenticated (logged in)
@@ -161,8 +168,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        //configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://localhost:4201"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

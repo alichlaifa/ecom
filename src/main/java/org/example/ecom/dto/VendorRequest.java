@@ -9,11 +9,14 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
+public class VendorRequest {
     private Long id;
     private String username;
     private String email;
-    private String password;
+    private String phone;
+    private String address;
+    private String companyName;
+    private String image;
     private String fullName;
     private LocalDate birthDate;
 }

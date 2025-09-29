@@ -1,11 +1,12 @@
 package org.example.ecom.service;
 
 import lombok.AllArgsConstructor;
-import org.example.ecom.dto.RegisterRequest;
 import org.example.ecom.dto.RegisterVendorRequest;
+import org.example.ecom.dto.VendorRequest;
 import org.example.ecom.model.Client;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.model._Role;
+import org.example.ecom.model._User;
 import org.example.ecom.repository.UserRepo;
 import org.example.ecom.repository.VendorRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -73,5 +74,29 @@ public class VendorService {
                 .companyName(registerVendorRequest.getCompanyName())
                 .build();
         userRepo.save(vendor);
+    }
+
+    public VendorRequest getVendorByUsername(String username) {
+        _User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getRole() != _Role.ROLE_VENDOR) {
+            throw new RuntimeException("User is not a vendor");
+        }
+
+        Vendor vendor = vendorRepo.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("Vendor details not found"));
+
+        VendorRequest dto = new VendorRequest();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setAddress(user.getAddress());
+        dto.setFullName(user.getFullName());
+        dto.setBirthDate(user.getBirthDate());
+        dto.setImage(user.getImage());
+        dto.setCompanyName(vendor.getCompanyName());
+        return dto;
     }
 }

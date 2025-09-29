@@ -1,5 +1,6 @@
 package org.example.ecom.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,13 +20,13 @@ public class Product {
     private String image;
     private String size;
     private String color;
-    private String stock;
+    private int stock;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JsonIgnore
+    private Vendor vendor;
 
     @ManyToOne
-    private Client client;
-
+    @JoinColumn(name = "sub_category_id")
+    private SubCategory subCategory;
 }

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/v1/upload")
+@RequestMapping("/upload")
 public class UploadController {
     @Autowired
     StorageService storageService;
@@ -42,12 +43,25 @@ public class UploadController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(fileNames);
     }
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
+//    @GetMapping("/files/{filename}")
+//    @ResponseBody
+//    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+//        Resource file = storageService.loadFile(filename);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+//                .body(file);
+//    }
+
+    @GetMapping("/files/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = storageService.loadFile(filename);
+        Resource resource = storageService.loadFile(filename);
+        if (resource == null) {
+            // Optionally, return 204 No Content instead of 500
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
+                .contentType(MediaType.IMAGE_JPEG) // adjust accordingly
+                .body(resource);
     }
+
 }

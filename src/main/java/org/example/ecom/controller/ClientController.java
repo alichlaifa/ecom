@@ -1,11 +1,10 @@
 package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
-import org.example.ecom.dto.RegisterRequest;
+import org.example.ecom.dto.RegisterClientRequest;
 import org.example.ecom.dto.SuccessMessageRequest;
 import org.example.ecom.model.Client;
 import org.example.ecom.service.ClientService;
-import org.example.ecom.service.VendorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,9 +45,9 @@ public class ClientController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> register(@RequestBody RegisterClientRequest registerClientRequest) {
         try {
-            clientService.register(registerRequest);
+            clientService.register(registerClientRequest);
             return ResponseEntity.ok(new SuccessMessageRequest("User registered successfully!"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

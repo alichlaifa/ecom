@@ -49,8 +49,8 @@ public class CategoryService {
             storageService.store(file);
             existingCategory.setImage(file.getOriginalFilename());
         }
-
         return categoryRepo.save(existingCategory);
     }
+
 
 }

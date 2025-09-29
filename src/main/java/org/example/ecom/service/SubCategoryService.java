@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.example.ecom.model.Category;
 import org.example.ecom.model.SubCategory;
+import org.example.ecom.repository.CategoryRepo;
 import org.example.ecom.repository.SubCategoryRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class SubCategoryService {
     private final SubCategoryRepo subCategoryRepo;
     private final StorageService storageService;
+    private final CategoryRepo categoryRepo;
 
     public List<SubCategory> getSubCategory() {
         return subCategoryRepo.findAll();
@@ -57,5 +59,17 @@ public class SubCategoryService {
         return subCategory.getCategory();
     }
 
+    public SubCategory addSubcategoryByCategoryId(Long categoryId, SubCategory subCategory, MultipartFile file) {
+        storageService.store(file);
+        subCategory.setImage(file.getOriginalFilename());
 
+        Category category = categoryRepo.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
+        subCategory.setCategory(category);
+
+        return subCategoryRepo.save(subCategory);
+    }
+
+    public List<SubCategory> getSubCategoriesByCategoryId(Long categoryId) {
+        return subCategoryRepo.findByCategoryId(categoryId);
+    }
 }

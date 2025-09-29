@@ -2,7 +2,10 @@ package org.example.ecom.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.ecom.model.Category;
+import org.example.ecom.model.SubCategory;
 import org.example.ecom.service.CategoryService;
+import org.example.ecom.service.SubCategoryService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +17,7 @@ import java.util.Optional;
 @RequestMapping("/api/v1/category")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final SubCategoryService subcategoryService;
 
     @GetMapping
     public List<Category> getCategory() {
@@ -38,5 +42,11 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     public Category updateCategory(@PathVariable Long id, @ModelAttribute Category category, @RequestPart(required = false) MultipartFile file) {
         return categoryService.updateCategory(id, category, file);
+    }
+
+    @GetMapping("/subcategories/{categoryId}")
+    public ResponseEntity<List<SubCategory>> getSubCategoriesByCategory(@PathVariable Long categoryId) {
+        List<SubCategory> subCategories = subcategoryService.getSubCategoriesByCategoryId(categoryId);
+        return ResponseEntity.ok(subCategories);
     }
 }

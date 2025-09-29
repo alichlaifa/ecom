@@ -1,7 +1,7 @@
 package org.example.ecom.service;
 
 import lombok.AllArgsConstructor;
-import org.example.ecom.dto.RegisterRequest;
+import org.example.ecom.dto.RegisterClientRequest;
 import org.example.ecom.model.Client;
 import org.example.ecom.model._Role;
 import org.example.ecom.repository.ClientRepo;
@@ -55,25 +55,23 @@ public class ClientService {
         return clientRepo.save(existingClient);
     }
 
-    public void register(RegisterRequest registerRequest) {
-        if (userRepo.findByUsername(registerRequest.getUsername()).isPresent()) {
+    public void register(RegisterClientRequest registerClientRequest) {
+        if (userRepo.findByUsername(registerClientRequest.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
-        if (userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
+        if (userRepo.findByEmail(registerClientRequest.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
 
         Client client = Client.builder()
-                .fullName(registerRequest.getFullName())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .birthDate(registerRequest.getBirthDate())
+                .fullName(registerClientRequest.getFullName())
+                .email(registerClientRequest.getEmail())
+                .username(registerClientRequest.getUsername())
+                .birthDate(registerClientRequest.getBirthDate())
                 .role(_Role.ROLE_CLIENT)
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .password(passwordEncoder.encode(registerClientRequest.getPassword()))
                 .isEnabled(true)
                 .build();
         userRepo.save(client);
     }
-
-
 }

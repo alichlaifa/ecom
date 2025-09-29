@@ -34,19 +34,35 @@ public class StorageService {
 
     // This method loads a file (such as an image or PDF) from disk
     // so it can be returned to the client via an HTTP response.
+//    public Resource loadFile(String filename) {
+//        try {
+//            Path file = rootLocation.resolve(filename);
+//            Resource resource = new UrlResource(file.toUri());
+//            if (resource.exists() || resource.isReadable()) {
+//                return resource;
+//            } else {
+//                throw new RuntimeException("FAIL!");
+//            }
+//        } catch (MalformedURLException e) {
+//            throw new RuntimeException("FAIL!");
+//        }
+//    }
+
     public Resource loadFile(String filename) {
         try {
-            Path file = rootLocation.resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return resource;
-            } else {
-                throw new RuntimeException("FAIL!");
+            Path filePath = rootLocation.resolve(filename).normalize();
+            if (!Files.exists(filePath)) {
+                // File not found, ignore and return null or a default resource
+                System.out.println("File not found: " + filename);
+                return null; // or return a default placeholder Resource
             }
+            return new UrlResource(filePath.toUri());
         } catch (MalformedURLException e) {
-            throw new RuntimeException("FAIL!");
+            e.printStackTrace();
+            return null; // ignore the error
         }
     }
+
 
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());

@@ -3,6 +3,7 @@ package org.example.ecom.controller;
 import lombok.AllArgsConstructor;
 import org.example.ecom.dto.RegisterVendorRequest;
 import org.example.ecom.dto.SuccessMessageRequest;
+import org.example.ecom.dto.VendorRequest;
 import org.example.ecom.model.Vendor;
 import org.example.ecom.service.VendorService;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,16 @@ public class VendorController {
             return ResponseEntity.ok(new SuccessMessageRequest("User registered successfully!"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/by-username/{username}")
+    public ResponseEntity<VendorRequest> getVendorByUsername(@PathVariable String username) {
+        try {
+            VendorRequest vendor = vendorService.getVendorByUsername(username);
+            return ResponseEntity.ok(vendor);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null);
         }
     }
 }

@@ -2,9 +2,7 @@ package org.example.ecom.service;
 
 import lombok.AllArgsConstructor;
 import org.example.ecom.dto.*;
-import org.example.ecom.model._Role;
-import org.example.ecom.model._Token;
-import org.example.ecom.model._User;
+import org.example.ecom.model.*;
 import org.example.ecom.repository.TokenRepo;
 import org.example.ecom.repository.UserRepo;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -36,25 +35,48 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
     private final TokenRepo tokenRepo;
+    private final StorageService storageService;
 
-    public void register(RegisterRequest registerRequest) {
-        if(userRepo.findByEmail(registerRequest.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("This email is already in use");
-        }
-        if (userRepo.findByUsername(registerRequest.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("This username has been taken");
-        }
+    public void registerClient(RegisterClientRequest request) {
+        checkDuplicateEmailOrUsername(request.getEmail(), request.getUsername());
 
-        _User user = _User.builder()
-                .fullName(registerRequest.getFullName())
-                .email(registerRequest.getEmail())
-                .username(registerRequest.getUsername())
-                .birthDate(registerRequest.getBirthDate())
-                .role(_Role.ROLE_USER)
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
+        Client client = Client.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .birthDate(request.getBirthDate())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(_Role.ROLE_CLIENT)
                 .isEnabled(true)
                 .build();
-        userRepo.save(user);
+
+        userRepo.save(client);
+    }
+
+    public void registerVendor(RegisterVendorRequest request) {
+        checkDuplicateEmailOrUsername(request.getEmail(), request.getUsername());
+
+        Vendor vendor = Vendor.builder()
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .username(request.getUsername())
+                .birthDate(request.getBirthDate())
+                .companyName(request.getCompanyName())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(_Role.ROLE_VENDOR)
+                .isEnabled(true)
+                .build();
+
+        userRepo.save(vendor);
+    }
+
+    private void checkDuplicateEmailOrUsername(String email, String username) {
+        if (userRepo.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("This email is already in use");
+        }
+        if (userRepo.findByUsername(username).isPresent()) {
+            throw new IllegalArgumentException("This username has been taken");
+        }
     }
 
     public JwtToken login(LoginRequest loginRequest) {
@@ -173,5 +195,36 @@ public class UserService {
         if (!request.getTokenText().equals(token.getTokenText())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong token provided");
         }
+    }
+
+    public void changePassword(_User user, ChangePasswordRequest request) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current password is incorrect");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Passwords do not match");
+        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepo.save(user);
+    }
+
+    public void deleteUserByUsername(String username) {
+        _User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userRepo.delete(user);
+    }
+
+    public void disableUser(Long id) {
+        _User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setIsEnabled(false);
+        userRepo.save(user);
+    }
+
+    public void enableUser(Long id) {
+        _User user = userRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setIsEnabled(true);
+        userRepo.save(user);
     }
 }

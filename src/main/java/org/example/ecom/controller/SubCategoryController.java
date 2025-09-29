@@ -12,7 +12,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/subcategories")
+@RequestMapping("/api/v1/subcategory")
 public class SubCategoryController {
     private final SubCategoryService subCategoryService;
 
@@ -40,13 +40,18 @@ public class SubCategoryController {
     }
 
     @PutMapping(value = "/{id}")
-    public SubCategory updateCategory(@PathVariable Long id, @ModelAttribute SubCategory subCategory, @RequestPart(required = false) MultipartFile file) {
+    public SubCategory updateSubCategory(@PathVariable Long id, @ModelAttribute SubCategory subCategory, @RequestPart(required = false) MultipartFile file) {
         return subCategoryService.updateSubCategory(id, subCategory, file);
     }
 
     @GetMapping("/{id}/category")
     public Category getCategory(@PathVariable Long id) {
         return subCategoryService.getCategoryBySubCategoryId(id);
+    }
+
+    @PostMapping("/byCategoryId")
+    public SubCategory addSubcategoryByCategoryId(@RequestParam Long categoryId, @ModelAttribute SubCategory subCategory, @RequestPart MultipartFile file) {
+        return subCategoryService.addSubcategoryByCategoryId(categoryId, subCategory, file);
     }
 
 }
